@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Canvas, Path, Text, Shadow, Circle, Group } from 'fabric';
+import { Canvas, Path, Text, Shadow, Group } from 'fabric';
 import { WheelSegment } from './types';
 
 interface WheelCanvasProps {
@@ -48,10 +48,10 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       top: centerY,
       originX: 'center',
       originY: 'center',
-      selectable: true, // Make the wheel group selectable
-      hasControls: true, // Show resize controls
-      hasBorders: true, // Show borders
-      lockRotation: true, // Prevent rotation via controls
+      selectable: true,
+      hasControls: true,
+      hasBorders: true,
+      lockRotation: true,
     });
 
     // Draw outer ring (white border)
@@ -115,21 +115,6 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       
       startAngle += angle;
     });
-
-    const centerCircle = new Circle({
-      radius: 25,
-      fill: '#FFFFFF',
-      stroke: '#FFFFFF',
-      strokeWidth: 2,
-      selectable: false,
-      shadow: new Shadow({
-        color: 'rgba(0,0,0,0.3)',
-        blur: 5,
-        offsetX: 2,
-        offsetY: 2
-      })
-    });
-    wheelGroup.add(centerCircle);
 
     canvas.add(wheelGroup);
     canvas.renderAll();
