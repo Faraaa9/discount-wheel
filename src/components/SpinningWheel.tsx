@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Canvas } from 'fabric';
+import { Canvas, Path, Text, util } from 'fabric';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -41,18 +41,18 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
     const canvas = fabricRef.current;
     canvas.clear();
 
-    const centerX = canvas.width! / 2;
-    const centerY = canvas.height! / 2;
+    const centerX = canvas.getWidth() / 2;
+    const centerY = canvas.getHeight() / 2;
     const radius = Math.min(centerX, centerY) - 10;
 
     let startAngle = 0;
     const totalProbability = segments.reduce((sum, segment) => sum + segment.probability, 0);
 
-    segments.forEach((segment, index) => {
+    segments.forEach((segment) => {
       const angle = (segment.probability / totalProbability) * 2 * Math.PI;
       
       // Draw segment
-      const path = new fabric.Path([
+      const path = new Path([
         'M', centerX, centerY,
         'L', centerX + radius * Math.cos(startAngle), centerY + radius * Math.sin(startAngle),
         'A', radius, radius, 0, angle > Math.PI ? 1 : 0, 1,
@@ -68,7 +68,7 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
 
       // Add text
       const textAngle = startAngle + angle / 2;
-      const text = new fabric.Text(segment.text, {
+      const text = new Text(segment.text, {
         left: centerX + (radius * 0.7) * Math.cos(textAngle),
         top: centerY + (radius * 0.7) * Math.sin(textAngle),
         fontSize: 16,
@@ -118,8 +118,8 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
     canvas.getObjects().forEach(obj => {
       obj.animate('angle', targetRotation, {
         duration: 3000,
-        onChange: canvas.renderAll.bind(canvas),
-        easing: fabric.util.ease.easeOutCubic,
+        onChange: () => canvas.renderAll(),
+        easing: util.ease.easeOutCubic,
         onComplete: () => {
           setIsSpinning(false);
           if (onSpinEnd) {
