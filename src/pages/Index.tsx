@@ -36,7 +36,7 @@ const Index = () => {
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-7xl mx-auto px-6">
         <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">
-          Spin & Win Discounts!
+          Laimės ratas
         </h1>
         
         <div className="flex flex-col items-center justify-center min-h-[800px] relative">
@@ -53,7 +53,7 @@ const Index = () => {
           {/* Current Discount Display */}
           {showSaleForm && !showConfig && currentDiscount && (
             <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-10 text-center mb-6">
-              <h2 className="text-2xl text-gray-600 mb-2">Current Discount</h2>
+              <h2 className="text-2xl text-gray-600 mb-2">Sveikinu, Jums pasisekė!</h2>
               <div className="text-6xl font-bold text-purple-600 mb-8">
                 {currentDiscount}
               </div>
