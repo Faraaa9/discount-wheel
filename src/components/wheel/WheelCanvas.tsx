@@ -17,6 +17,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     const canvas = new Canvas(canvasRef.current, {
       width: 500,
       height: 500,
+      centeredRotation: true, // Ensure rotation happens around center
+      selection: false // Disable selection to prevent accidental moves
     });
 
     fabricRef.current = canvas;
@@ -36,34 +38,43 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
 
     const centerX = canvas.getWidth() / 2;
     const centerY = canvas.getHeight() / 2;
-    const radius = Math.min(centerX, centerY) - 20; // Slightly smaller radius
+    const radius = Math.min(centerX, centerY) - 20;
 
-    let startAngle = 0;
+    let startAngle = -Math.PI / 2; // Start from top (12 o'clock position)
     const totalProbability = segments.reduce((sum, segment) => sum + segment.probability, 0);
+
+    // Create a group for the wheel to ensure proper rotation
+    const wheelGroup = new fabric.Group([], {
+      left: centerX,
+      top: centerY,
+      originX: 'center',
+      originY: 'center',
+      selectable: false,
+    });
 
     // Add outer ring
     const outerRing = new Path([
-      'M', centerX - radius - 5, centerY,
-      'A', radius + 5, radius + 5, 0, 1, 1, centerX + radius + 5, centerY,
-      'A', radius + 5, radius + 5, 0, 1, 1, centerX - radius - 5, centerY,
+      'M', -radius - 5, 0,
+      'A', radius + 5, radius + 5, 0, 1, 1, radius + 5, 0,
+      'A', radius + 5, radius + 5, 0, 1, 1, -radius - 5, 0,
     ].join(' '), {
       fill: 'transparent',
-      stroke: '#FFD700', // Gold color
+      stroke: '#FFD700',
       strokeWidth: 10,
       selectable: false
     });
-    canvas.add(outerRing);
+    wheelGroup.addWithUpdate(outerRing);
 
-    segments.forEach((segment, index) => {
+    segments.forEach((segment) => {
       const angle = (segment.probability / totalProbability) * 2 * Math.PI;
       
-      // Draw segment with gradient effect
+      // Draw segment
       const path = new Path([
-        'M', centerX, centerY,
-        'L', centerX + radius * Math.cos(startAngle), centerY + radius * Math.sin(startAngle),
+        'M', 0, 0,
+        'L', radius * Math.cos(startAngle), radius * Math.sin(startAngle),
         'A', radius, radius, 0, angle > Math.PI ? 1 : 0, 1,
-        centerX + radius * Math.cos(startAngle + angle),
-        centerY + radius * Math.sin(startAngle + angle),
+        radius * Math.cos(startAngle + angle),
+        radius * Math.sin(startAngle + angle),
         'Z'
       ].join(' '), {
         fill: segment.color,
@@ -77,15 +88,14 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         }),
         selectable: false
       });
+      wheelGroup.addWithUpdate(path);
 
-      canvas.add(path);
-
-      // Add text with enhanced styling
+      // Add text
       const textAngle = startAngle + angle / 2;
-      const textRadius = radius * 0.65; // Position text closer to center
+      const textRadius = radius * 0.65;
       const text = new Text(segment.text, {
-        left: centerX + textRadius * Math.cos(textAngle),
-        top: centerY + textRadius * Math.sin(textAngle),
+        left: textRadius * Math.cos(textAngle),
+        top: textRadius * Math.sin(textAngle),
         fontSize: 20,
         fontWeight: 'bold',
         fill: '#FFFFFF',
@@ -101,15 +111,13 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         }),
         selectable: false
       });
-
-      canvas.add(text);
+      wheelGroup.addWithUpdate(text);
+      
       startAngle += angle;
     });
 
     // Add center decoration
     const centerCircle = new Circle({
-      left: centerX - 15,
-      top: centerY - 15,
       radius: 15,
       fill: '#FFD700',
       stroke: '#FFFFFF',
@@ -122,8 +130,9 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         offsetY: 2
       })
     });
-    canvas.add(centerCircle);
+    wheelGroup.addWithUpdate(centerCircle);
 
+    canvas.add(wheelGroup);
     canvas.renderAll();
   };
 
