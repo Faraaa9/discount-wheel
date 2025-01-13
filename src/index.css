@@ -62,7 +62,7 @@
   @apply relative w-full max-w-xl aspect-square;
   perspective: 1000px;
   transform-style: preserve-3d;
-  margin-left: 800px; /* Updated margin to move right */
+  margin-left: 300px; /* Updated margin to move left (from 800px to 300px) */
   margin-top: 3rem;  /* Kept existing top margin */
 }
 
