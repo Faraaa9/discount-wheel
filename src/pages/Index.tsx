@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { SpinningWheel } from '@/components/SpinningWheel';
 import { AdminPanel } from '@/components/AdminPanel';
 import { SaleForm } from '@/components/SaleForm';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const initialSegments = [
   { text: '10% OFF', probability: 30, color: '#FF6B6B' },
@@ -13,6 +15,7 @@ const initialSegments = [
 const Index = () => {
   const [segments, setSegments] = useState(initialSegments);
   const [currentDiscount, setCurrentDiscount] = useState('');
+  const [showConfig, setShowConfig] = useState(false);
 
   const handleSpinEnd = (segment: typeof initialSegments[0]) => {
     setCurrentDiscount(segment.text);
@@ -29,32 +32,44 @@ const Index = () => {
           Spin & Win Discounts!
         </h1>
         
-        <div className="flex flex-col lg:flex-row gap-16 items-start justify-center">
-          {/* Main Content Section */}
-          <div className="flex-1 flex flex-col items-center space-y-12">
-            <div className="relative w-full max-w-xl mx-auto">
-              <SpinningWheel 
-                segments={segments}
-                onSpinEnd={handleSpinEnd}
-              />
-            </div>
-            {currentDiscount && (
-              <div className="w-full max-w-md">
-                <SaleForm
-                  discount={currentDiscount}
-                  onSubmit={handleSaleSubmit}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Configuration Panel */}
-          <div className="w-full lg:w-[480px]">
-            <AdminPanel
+        <div className="flex flex-col items-center justify-center space-y-8">
+          {/* Main Wheel Section */}
+          <div className="relative w-full max-w-xl mx-auto">
+            <SpinningWheel 
               segments={segments}
-              onUpdate={setSegments}
+              onSpinEnd={handleSpinEnd}
             />
           </div>
+
+          {/* Configuration Toggle */}
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="config-mode"
+              checked={showConfig}
+              onCheckedChange={setShowConfig}
+            />
+            <Label htmlFor="config-mode">Configuration Mode</Label>
+          </div>
+
+          {/* Configuration Panel (Conditional) */}
+          {showConfig && (
+            <div className="w-full max-w-xl mt-8">
+              <AdminPanel
+                segments={segments}
+                onUpdate={setSegments}
+              />
+            </div>
+          )}
+
+          {/* Sale Form (Conditional) */}
+          {currentDiscount && !showConfig && (
+            <div className="w-full max-w-md mt-8">
+              <SaleForm
+                discount={currentDiscount}
+                onSubmit={handleSaleSubmit}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
