@@ -40,7 +40,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     const centerY = canvas.getHeight() / 2;
     const radius = Math.min(centerX, centerY) - 20;
 
-    let startAngle = (Math.PI / 4); // Changed to 45 degrees (π/4 radians)
+    let startAngle = 0; // Changed to 0 degrees (0 radians)
     const totalSpace = segments.reduce((sum, segment) => sum + segment.spaceAmount, 0);
 
     const wheelGroup = new Group([], {
