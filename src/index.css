@@ -62,6 +62,8 @@
   @apply relative w-full max-w-xl aspect-square;
   perspective: 1000px;
   transform-style: preserve-3d;
+  margin-left: 5rem; /* Added margin to move right */
+  margin-top: 3rem;  /* Added margin to move down */
 }
 
 .spin-button {
