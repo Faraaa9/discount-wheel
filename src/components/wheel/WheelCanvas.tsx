@@ -18,7 +18,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       width: 1000,
       height: 1000,
       centeredRotation: true,
-      selection: true
+      selection: true,
+      renderOnAddRemove: true
     });
 
     fabricRef.current = canvas;
@@ -40,7 +41,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     const centerY = canvas.getHeight() / 2;
     const radius = Math.min(centerX, centerY) - 20;
 
-    let startAngle = 0; // Changed to 0 degrees (0 radians)
+    let startAngle = 0;
     const totalSpace = segments.reduce((sum, segment) => sum + segment.spaceAmount, 0);
 
     const wheelGroup = new Group([], {
@@ -117,6 +118,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     });
 
     canvas.add(wheelGroup);
+    canvas.centerObject(wheelGroup);
     canvas.renderAll();
   };
 
