@@ -58,8 +58,8 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
         easing: util.ease.easeOutCubic,
         onComplete: () => {
           setIsSpinning(false);
-          if (onSpinEnd) {
-            onSpinEnd(selectedSegment!);
+          if (onSpinEnd && selectedSegment) {
+            onSpinEnd(selectedSegment);
           }
           toast.success(`You won: ${selectedSegment!.text}!`);
         },
