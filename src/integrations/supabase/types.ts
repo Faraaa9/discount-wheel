@@ -41,6 +41,27 @@ export type Database = {
           },
         ]
       }
+      sale_records: {
+        Row: {
+          created_at: string
+          id: string
+          sale_number: string
+          segment_text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          sale_number: string
+          segment_text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          sale_number?: string
+          segment_text?: string
+        }
+        Relationships: []
+      }
       tracked_accounts: {
         Row: {
           avatar_url: string | null

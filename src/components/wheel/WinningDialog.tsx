@@ -2,6 +2,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import confetti from "canvas-confetti";
 import { useEffect } from "react";
 import type { WheelSegment } from "./types";
+import { SaleForm } from "../SaleForm";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface WinningDialogProps {
   isOpen: boolean;
@@ -21,6 +24,27 @@ export const WinningDialog = ({ isOpen, onClose, segment }: WinningDialogProps) 
     }
   }, [isOpen, segment]);
 
+  const handleSaleSubmit = async (saleNumber: string) => {
+    if (!segment) return;
+
+    try {
+      const { error } = await supabase
+        .from('sale_records')
+        .insert([
+          {
+            sale_number: saleNumber,
+            segment_text: segment.text
+          }
+        ]);
+
+      if (error) throw error;
+      onClose();
+    } catch (error) {
+      console.error('Error saving sale record:', error);
+      toast.error('Failed to save sale record');
+    }
+  };
+
   if (!segment) return null;
 
   return (
@@ -38,6 +62,7 @@ export const WinningDialog = ({ isOpen, onClose, segment }: WinningDialogProps) 
           <p className="text-center text-gray-600">
             Jūs laimėjote nuostabų prizą! 
           </p>
+          <SaleForm onSubmit={handleSaleSubmit} />
         </div>
       </DialogContent>
     </Dialog>
