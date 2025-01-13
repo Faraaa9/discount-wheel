@@ -42,13 +42,18 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
       selectedSegment = segments[segments.length - 1];
     }
 
-    // Calculate rotation
+    // Calculate rotation with added randomness
     const currentRotation = canvas.getObjects()[0]?.angle || 0;
-    const targetRotation = currentRotation + 1440 + Math.random() * 360; // Spin 4 times + random
+    const minSpins = 4; // Minimum number of full rotations
+    const maxSpins = 8; // Maximum number of full rotations
+    const randomSpins = minSpins + Math.random() * (maxSpins - minSpins);
+    const extraDegrees = Math.random() * 360; // Random additional degrees
+    const targetRotation = currentRotation + (randomSpins * 360) + extraDegrees;
 
+    // Apply the spinning animation
     canvas.getObjects().forEach(obj => {
       obj.animate({ angle: targetRotation }, {
-        duration: 3000,
+        duration: 4000 + Math.random() * 1000, // Random duration between 4-5 seconds
         onChange: () => canvas.renderAll(),
         easing: util.ease.easeOutCubic,
         onComplete: () => {
