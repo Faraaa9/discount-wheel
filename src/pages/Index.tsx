@@ -32,9 +32,9 @@ const Index = () => {
           Spin & Win Discounts!
         </h1>
         
-        <div className="relative h-[600px] flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center min-h-[800px] relative">
           {/* Main Wheel Section */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="w-full max-w-xl mx-auto mb-8">
             <SpinningWheel 
               segments={segments}
               onSpinEnd={handleSpinEnd}
@@ -42,7 +42,7 @@ const Index = () => {
           </div>
 
           {/* Configuration Toggle */}
-          <div className="absolute bottom-0 flex items-center space-x-2">
+          <div className="mt-4 flex items-center space-x-2">
             <Switch
               id="config-mode"
               checked={showConfig}
@@ -53,7 +53,7 @@ const Index = () => {
 
           {/* Configuration Panel (Conditional) */}
           {showConfig && (
-            <div className="absolute top-full mt-8 w-full max-w-xl">
+            <div className="w-full max-w-xl mt-8">
               <AdminPanel
                 segments={segments}
                 onUpdate={setSegments}
@@ -63,7 +63,7 @@ const Index = () => {
 
           {/* Sale Form (Conditional) */}
           {currentDiscount && !showConfig && (
-            <div className="absolute top-full mt-8 w-full max-w-md">
+            <div className="w-full max-w-md mt-8">
               <SaleForm
                 discount={currentDiscount}
                 onSubmit={handleSaleSubmit}
