@@ -17,8 +17,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     const canvas = new Canvas(canvasRef.current, {
       width: 500,
       height: 500,
-      centeredRotation: true, // Ensure rotation happens around center
-      selection: false // Disable selection to prevent accidental moves
+      centeredRotation: true,
+      selection: false
     });
 
     fabricRef.current = canvas;
@@ -40,10 +40,9 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     const centerY = canvas.getHeight() / 2;
     const radius = Math.min(centerX, centerY) - 20;
 
-    let startAngle = -Math.PI / 2; // Start from top (12 o'clock position)
+    let startAngle = -Math.PI / 2;
     const totalProbability = segments.reduce((sum, segment) => sum + segment.probability, 0);
 
-    // Create a group for the wheel to ensure proper rotation
     const wheelGroup = new Group([], {
       left: centerX,
       top: centerY,
@@ -52,7 +51,6 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       selectable: false,
     });
 
-    // Add outer ring
     const outerRing = new Path([
       'M', -radius - 5, 0,
       'A', radius + 5, radius + 5, 0, 1, 1, radius + 5, 0,
@@ -63,12 +61,11 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       strokeWidth: 10,
       selectable: false
     });
-    wheelGroup.addWithUpdate(outerRing);
+    wheelGroup.add(outerRing);
 
     segments.forEach((segment) => {
       const angle = (segment.probability / totalProbability) * 2 * Math.PI;
       
-      // Draw segment
       const path = new Path([
         'M', 0, 0,
         'L', radius * Math.cos(startAngle), radius * Math.sin(startAngle),
@@ -88,9 +85,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         }),
         selectable: false
       });
-      wheelGroup.addWithUpdate(path);
+      wheelGroup.add(path);
 
-      // Add text
       const textAngle = startAngle + angle / 2;
       const textRadius = radius * 0.65;
       const text = new Text(segment.text, {
@@ -111,12 +107,11 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         }),
         selectable: false
       });
-      wheelGroup.addWithUpdate(text);
+      wheelGroup.add(text);
       
       startAngle += angle;
     });
 
-    // Add center decoration
     const centerCircle = new Circle({
       radius: 15,
       fill: '#FFD700',
@@ -130,7 +125,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         offsetY: 2
       })
     });
-    wheelGroup.addWithUpdate(centerCircle);
+    wheelGroup.add(centerCircle);
 
     canvas.add(wheelGroup);
     canvas.renderAll();
