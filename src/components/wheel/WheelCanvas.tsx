@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Canvas, Path, Text, Shadow, Circle } from 'fabric';
+import { Canvas, Path, Text, Shadow, Circle, Group } from 'fabric';
 import { WheelSegment } from './types';
 
 interface WheelCanvasProps {
@@ -44,7 +44,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     const totalProbability = segments.reduce((sum, segment) => sum + segment.probability, 0);
 
     // Create a group for the wheel to ensure proper rotation
-    const wheelGroup = new fabric.Group([], {
+    const wheelGroup = new Group([], {
       left: centerX,
       top: centerY,
       originX: 'center',
