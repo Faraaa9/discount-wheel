@@ -1,17 +1,9 @@
-import { useState, useEffect } from 'react';
-import { SpinningWheel } from '@/components/SpinningWheel';
-import { AdminPanel } from '@/components/AdminPanel';
+import { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-
-interface Segment {
-  text: string;
-  probability: number;
-  spaceAmount: number;
-  color: string;
-}
+import { WheelConfigManager } from '@/components/wheel/WheelConfigManager';
+import { WheelDisplay } from '@/components/wheel/WheelDisplay';
+import { Segment } from '@/types/wheel';
 
 const initialSegments: Segment[] = [
   { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },  // White
@@ -28,103 +20,10 @@ const Index = () => {
   const [currentDiscount, setCurrentDiscount] = useState('');
   const [showConfig, setShowConfig] = useState(false);
   const [showSaleForm, setShowSaleForm] = useState(false);
-  const [configId, setConfigId] = useState<string | null>(null);
-
-  // Load the latest configuration from the database
-  useEffect(() => {
-    const loadConfiguration = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('wheel_configurations')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (error) {
-          console.error('Error loading configuration:', error);
-          toast.error('Failed to load wheel configuration');
-          return;
-        }
-
-        if (data && data.length > 0) {
-          // Type assertion to ensure the segments match our expected type
-          const loadedSegments = data[0].segments as Segment[];
-          // Validate that all required properties exist
-          if (loadedSegments.every(segment => 
-            'text' in segment && 
-            'probability' in segment && 
-            'spaceAmount' in segment && 
-            'color' in segment
-          )) {
-            setSegments(loadedSegments);
-            setConfigId(data[0].id);
-          } else {
-            console.error('Invalid segment data structure');
-            toast.error('Invalid wheel configuration data');
-          }
-        } else {
-          // If no configuration exists, create one with initial segments
-          const { data: newConfig, error: insertError } = await supabase
-            .from('wheel_configurations')
-            .insert([{ segments: initialSegments }])
-            .select()
-            .single();
-
-          if (insertError) {
-            console.error('Error creating initial configuration:', insertError);
-            toast.error('Failed to create initial wheel configuration');
-            return;
-          }
-
-          if (newConfig) {
-            setConfigId(newConfig.id);
-          }
-        }
-      } catch (error) {
-        console.error('Error in loadConfiguration:', error);
-        toast.error('Failed to load wheel configuration');
-      }
-    };
-
-    loadConfiguration();
-  }, []);
 
   const handleSpinEnd = (segment: Segment) => {
     setCurrentDiscount(segment.text);
     setShowSaleForm(true);
-  };
-
-  const handleConfigUpdate = async (newSegments: Segment[]) => {
-    try {
-      let response;
-      
-      if (configId) {
-        // Update existing configuration
-        response = await supabase
-          .from('wheel_configurations')
-          .update({ segments: newSegments })
-          .eq('id', configId)
-          .select();
-      } else {
-        // Create new configuration
-        response = await supabase
-          .from('wheel_configurations')
-          .insert([{ segments: newSegments }])
-          .select();
-      }
-
-      if (response.error) {
-        console.error('Error saving configuration:', response.error);
-        toast.error('Failed to save wheel configuration');
-        return;
-      }
-
-      setSegments(newSegments);
-      toast.success('Wheel configuration saved successfully!');
-    } catch (error) {
-      console.error('Error in handleConfigUpdate:', error);
-      toast.error('Failed to save wheel configuration');
-    }
   };
 
   return (
@@ -157,22 +56,18 @@ const Index = () => {
 
           {/* Main Wheel Section - Hidden when config is shown */}
           {!showConfig && (
-            <div className="w-full max-w-xl mx-auto mb-8">
-              <SpinningWheel 
-                segments={segments}
-                onSpinEnd={handleSpinEnd}
-              />
-            </div>
+            <WheelDisplay 
+              segments={segments}
+              onSpinEnd={handleSpinEnd}
+            />
           )}
 
           {/* Configuration Panel (Conditional) */}
           {showConfig && (
-            <div className="w-full max-w-xl mt-8">
-              <AdminPanel
-                segments={segments}
-                onUpdate={handleConfigUpdate}
-              />
-            </div>
+            <WheelConfigManager
+              initialSegments={initialSegments}
+              onConfigUpdate={setSegments}
+            />
           )}
         </div>
       </div>
