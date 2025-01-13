@@ -6,7 +6,14 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-const initialSegments = [
+interface Segment {
+  text: string;
+  probability: number;
+  spaceAmount: number;
+  color: string;
+}
+
+const initialSegments: Segment[] = [
   { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },  // White
   { text: 'Choice 5', probability: 1, spaceAmount: 1, color: '#FEF7CD' },  // Yellow
   { text: 'Choice 4', probability: 1, spaceAmount: 1, color: '#7E69AB' },  // Purple
@@ -17,7 +24,7 @@ const initialSegments = [
 ];
 
 const Index = () => {
-  const [segments, setSegments] = useState(initialSegments);
+  const [segments, setSegments] = useState<Segment[]>(initialSegments);
   const [currentDiscount, setCurrentDiscount] = useState('');
   const [showConfig, setShowConfig] = useState(false);
   const [showSaleForm, setShowSaleForm] = useState(false);
@@ -40,8 +47,21 @@ const Index = () => {
         }
 
         if (data && data.length > 0) {
-          setSegments(data[0].segments);
-          setConfigId(data[0].id);
+          // Type assertion to ensure the segments match our expected type
+          const loadedSegments = data[0].segments as Segment[];
+          // Validate that all required properties exist
+          if (loadedSegments.every(segment => 
+            'text' in segment && 
+            'probability' in segment && 
+            'spaceAmount' in segment && 
+            'color' in segment
+          )) {
+            setSegments(loadedSegments);
+            setConfigId(data[0].id);
+          } else {
+            console.error('Invalid segment data structure');
+            toast.error('Invalid wheel configuration data');
+          }
         } else {
           // If no configuration exists, create one with initial segments
           const { data: newConfig, error: insertError } = await supabase
@@ -69,12 +89,12 @@ const Index = () => {
     loadConfiguration();
   }, []);
 
-  const handleSpinEnd = (segment: typeof initialSegments[0]) => {
+  const handleSpinEnd = (segment: Segment) => {
     setCurrentDiscount(segment.text);
     setShowSaleForm(true);
   };
 
-  const handleConfigUpdate = async (newSegments: typeof initialSegments) => {
+  const handleConfigUpdate = async (newSegments: Segment[]) => {
     try {
       let response;
       
