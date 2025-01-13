@@ -60,8 +60,8 @@
 
 .wheel-container {
   @apply relative mx-auto;
-  width: 1000px;
-  height: 1000px;
+  width: 1500px;
+  height: 700px;
   perspective: 1000px;
   transform-style: preserve-3d;
   margin-top: 3rem;
