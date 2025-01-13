@@ -50,13 +50,16 @@ const Index = () => {
             <Label htmlFor="config-mode">Configuration Mode</Label>
           </div>
 
-          {/* Sale Form (Conditional) - Positioned above the wheel */}
-          {showSaleForm && !showConfig && (
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-10 w-full max-w-md">
-              <SaleForm
-                discount={currentDiscount}
-                onSubmit={handleSaleSubmit}
-              />
+          {/* Current Discount Display */}
+          {showSaleForm && !showConfig && currentDiscount && (
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-10 text-center mb-6">
+              <h2 className="text-2xl text-gray-600 mb-2">Current Discount</h2>
+              <div className="text-6xl font-bold text-purple-600 mb-8">
+                {currentDiscount}
+              </div>
+              <div className="w-full max-w-md">
+                <SaleForm onSubmit={handleSaleSubmit} />
+              </div>
             </div>
           )}
 

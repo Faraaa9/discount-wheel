@@ -6,11 +6,10 @@ import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
 
 interface SaleFormProps {
-  discount: string;
   onSubmit: (saleNumber: string) => void;
 }
 
-export const SaleForm = ({ discount, onSubmit }: SaleFormProps) => {
+export const SaleForm = ({ onSubmit }: SaleFormProps) => {
   const [saleNumber, setSaleNumber] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,12 +24,8 @@ export const SaleForm = ({ discount, onSubmit }: SaleFormProps) => {
   };
 
   return (
-    <Card className="p-8 shadow-lg">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <Label className="text-gray-700">Current Discount</Label>
-          <Input value={discount} disabled className="bg-gray-50 mt-2" />
-        </div>
+    <Card className="p-6 shadow-lg">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Label className="text-gray-700">Sale/Receipt Number</Label>
           <Input
