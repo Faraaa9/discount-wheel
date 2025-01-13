@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SpinningWheel } from '@/components/SpinningWheel';
 import { AdminPanel } from '@/components/AdminPanel';
-import { SaleForm } from '@/components/SaleForm';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const initialSegments = [
   { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },  // White
@@ -20,16 +21,90 @@ const Index = () => {
   const [currentDiscount, setCurrentDiscount] = useState('');
   const [showConfig, setShowConfig] = useState(false);
   const [showSaleForm, setShowSaleForm] = useState(false);
+  const [configId, setConfigId] = useState<string | null>(null);
+
+  // Load the latest configuration from the database
+  useEffect(() => {
+    const loadConfiguration = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('wheel_configurations')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error('Error loading configuration:', error);
+          toast.error('Failed to load wheel configuration');
+          return;
+        }
+
+        if (data && data.length > 0) {
+          setSegments(data[0].segments);
+          setConfigId(data[0].id);
+        } else {
+          // If no configuration exists, create one with initial segments
+          const { data: newConfig, error: insertError } = await supabase
+            .from('wheel_configurations')
+            .insert([{ segments: initialSegments }])
+            .select()
+            .single();
+
+          if (insertError) {
+            console.error('Error creating initial configuration:', insertError);
+            toast.error('Failed to create initial wheel configuration');
+            return;
+          }
+
+          if (newConfig) {
+            setConfigId(newConfig.id);
+          }
+        }
+      } catch (error) {
+        console.error('Error in loadConfiguration:', error);
+        toast.error('Failed to load wheel configuration');
+      }
+    };
+
+    loadConfiguration();
+  }, []);
 
   const handleSpinEnd = (segment: typeof initialSegments[0]) => {
     setCurrentDiscount(segment.text);
     setShowSaleForm(true);
   };
 
-  const handleSaleSubmit = (saleNumber: string) => {
-    console.log('Sale recorded:', { discount: currentDiscount, saleNumber });
-    setShowSaleForm(false);
-    setCurrentDiscount('');
+  const handleConfigUpdate = async (newSegments: typeof initialSegments) => {
+    try {
+      let response;
+      
+      if (configId) {
+        // Update existing configuration
+        response = await supabase
+          .from('wheel_configurations')
+          .update({ segments: newSegments })
+          .eq('id', configId)
+          .select();
+      } else {
+        // Create new configuration
+        response = await supabase
+          .from('wheel_configurations')
+          .insert([{ segments: newSegments }])
+          .select();
+      }
+
+      if (response.error) {
+        console.error('Error saving configuration:', response.error);
+        toast.error('Failed to save wheel configuration');
+        return;
+      }
+
+      setSegments(newSegments);
+      toast.success('Wheel configuration saved successfully!');
+    } catch (error) {
+      console.error('Error in handleConfigUpdate:', error);
+      toast.error('Failed to save wheel configuration');
+    }
   };
 
   return (
@@ -57,9 +132,6 @@ const Index = () => {
               <div className="text-6xl font-bold text-purple-600 mb-8">
                 {currentDiscount}
               </div>
-              <div className="w-full max-w-md">
-                <SaleForm onSubmit={handleSaleSubmit} />
-              </div>
             </div>
           )}
 
@@ -78,7 +150,7 @@ const Index = () => {
             <div className="w-full max-w-xl mt-8">
               <AdminPanel
                 segments={segments}
-                onUpdate={setSegments}
+                onUpdate={handleConfigUpdate}
               />
             </div>
           )}

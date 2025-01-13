@@ -62,6 +62,27 @@ export type Database = {
         }
         Relationships: []
       }
+      wheel_configurations: {
+        Row: {
+          created_at: string
+          id: string
+          segments: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          segments: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          segments?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
