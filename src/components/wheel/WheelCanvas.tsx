@@ -41,7 +41,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     const radius = Math.min(centerX, centerY) - 20;
 
     let startAngle = -Math.PI / 2;
-    const totalProbability = segments.reduce((sum, segment) => sum + segment.probability, 0);
+    const totalSpace = segments.reduce((sum, segment) => sum + segment.spaceAmount, 0);
 
     const wheelGroup = new Group([], {
       left: centerX,
@@ -68,7 +68,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     wheelGroup.add(outerRing);
 
     segments.forEach((segment) => {
-      const angle = (segment.probability / totalProbability) * 2 * Math.PI;
+      const angle = (segment.spaceAmount / totalSpace) * 2 * Math.PI;
       
       const path = new Path([
         'M', 0, 0,

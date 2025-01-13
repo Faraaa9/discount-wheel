@@ -9,6 +9,7 @@ interface Segment {
   text: string;
   probability: number;
   color: string;
+  spaceAmount: number;
 }
 
 interface AdminPanelProps {
@@ -21,7 +22,7 @@ export const AdminPanel = ({ segments: initialSegments, onUpdate }: AdminPanelPr
 
   const handleSegmentUpdate = (index: number, field: keyof Segment, value: string) => {
     const newSegments = [...segments];
-    if (field === 'probability') {
+    if (field === 'probability' || field === 'spaceAmount') {
       newSegments[index][field] = parseFloat(value) || 0;
     } else {
       newSegments[index][field] = value;
@@ -35,7 +36,15 @@ export const AdminPanel = ({ segments: initialSegments, onUpdate }: AdminPanelPr
   };
 
   const addSegment = () => {
-    setSegments([...segments, { text: 'New Segment', probability: 1, color: '#' + Math.floor(Math.random()*16777215).toString(16) }]);
+    setSegments([
+      ...segments,
+      {
+        text: 'New Segment',
+        probability: 1,
+        spaceAmount: 1,
+        color: '#' + Math.floor(Math.random()*16777215).toString(16)
+      }
+    ]);
   };
 
   const removeSegment = (index: number) => {
@@ -48,7 +57,7 @@ export const AdminPanel = ({ segments: initialSegments, onUpdate }: AdminPanelPr
       <h2 className="text-2xl font-bold mb-6">Wheel Configuration</h2>
       <div className="space-y-8">
         {segments.map((segment, index) => (
-          <div key={index} className="grid grid-cols-4 gap-6 items-end">
+          <div key={index} className="grid grid-cols-5 gap-6 items-end">
             <div>
               <Label>Text</Label>
               <Input
@@ -62,6 +71,14 @@ export const AdminPanel = ({ segments: initialSegments, onUpdate }: AdminPanelPr
                 type="number"
                 value={segment.probability}
                 onChange={(e) => handleSegmentUpdate(index, 'probability', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Space Amount</Label>
+              <Input
+                type="number"
+                value={segment.spaceAmount}
+                onChange={(e) => handleSegmentUpdate(index, 'spaceAmount', e.target.value)}
               />
             </div>
             <div>
