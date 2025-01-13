@@ -59,11 +59,12 @@
 }
 
 .wheel-container {
-  @apply relative w-full max-w-xl aspect-square mx-auto;
+  @apply relative mx-auto;
+  width: 1000px;
+  height: 1000px;
   perspective: 1000px;
   transform-style: preserve-3d;
   margin-top: 3rem;
-  transform: scale(0.85);
 }
 
 .spin-button {
