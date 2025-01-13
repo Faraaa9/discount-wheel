@@ -18,7 +18,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       width: 500,
       height: 500,
       centeredRotation: true,
-      selection: false
+      selection: true // Enable selection
     });
 
     fabricRef.current = canvas;
@@ -48,7 +48,10 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       top: centerY,
       originX: 'center',
       originY: 'center',
-      selectable: false,
+      selectable: true, // Make the wheel group selectable
+      hasControls: true, // Show resize controls
+      hasBorders: true, // Show borders
+      lockRotation: true, // Prevent rotation via controls
     });
 
     // Draw outer ring (white border)
@@ -95,7 +98,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         top: textRadius * Math.sin(textAngle),
         fontSize: 24,
         fontWeight: 'bold',
-        fill: '#000000', // Black text
+        fill: '#000000',
         fontFamily: 'Arial',
         originX: 'center',
         originY: 'center',
