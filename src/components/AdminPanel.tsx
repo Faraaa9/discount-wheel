@@ -44,19 +44,19 @@ export const AdminPanel = ({ segments: initialSegments, onUpdate }: AdminPanelPr
   };
 
   return (
-    <Card className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Wheel Configuration</h2>
-      <div className="space-y-4">
+    <Card className="p-8 shadow-lg">
+      <h2 className="text-2xl font-bold mb-6">Wheel Configuration</h2>
+      <div className="space-y-6">
         {segments.map((segment, index) => (
-          <div key={index} className="flex gap-4 items-center">
-            <div className="flex-1">
+          <div key={index} className="grid grid-cols-4 gap-4 items-end">
+            <div>
               <Label>Text</Label>
               <Input
                 value={segment.text}
                 onChange={(e) => handleSegmentUpdate(index, 'text', e.target.value)}
               />
             </div>
-            <div className="flex-1">
+            <div>
               <Label>Probability</Label>
               <Input
                 type="number"
@@ -70,22 +70,32 @@ export const AdminPanel = ({ segments: initialSegments, onUpdate }: AdminPanelPr
                 type="color"
                 value={segment.color}
                 onChange={(e) => handleSegmentUpdate(index, 'color', e.target.value)}
-                className="h-10 w-20"
+                className="h-10 w-full"
               />
             </div>
             <Button
               variant="destructive"
               onClick={() => removeSegment(index)}
-              className="mt-6"
+              className="bg-red-500 hover:bg-red-600"
             >
               Remove
             </Button>
           </div>
         ))}
       </div>
-      <div className="flex gap-4 mt-6">
-        <Button onClick={addSegment}>Add Segment</Button>
-        <Button onClick={handleSave} variant="default">Save Changes</Button>
+      <div className="flex gap-4 mt-8">
+        <Button 
+          onClick={addSegment}
+          className="bg-purple-500 hover:bg-purple-600 text-white"
+        >
+          Add Segment
+        </Button>
+        <Button 
+          onClick={handleSave}
+          className="bg-purple-500 hover:bg-purple-600 text-white"
+        >
+          Save Changes
+        </Button>
       </div>
     </Card>
   );
