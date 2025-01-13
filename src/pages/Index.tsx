@@ -36,22 +36,22 @@ const Index = () => {
         </h1>
         
         <div className="flex flex-col items-center justify-center min-h-[800px] relative">
-          {/* Main Wheel Section */}
-          <div className="w-full max-w-xl mx-auto mb-8">
-            <SpinningWheel 
-              segments={segments}
-              onSpinEnd={handleSpinEnd}
-            />
-          </div>
-
           {/* Configuration Toggle */}
-          <div className="mt-4 flex items-center space-x-2">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-2">
             <Switch
               id="config-mode"
               checked={showConfig}
               onCheckedChange={setShowConfig}
             />
             <Label htmlFor="config-mode">Configuration Mode</Label>
+          </div>
+
+          {/* Main Wheel Section */}
+          <div className="w-full max-w-xl mx-auto mb-8">
+            <SpinningWheel 
+              segments={segments}
+              onSpinEnd={handleSpinEnd}
+            />
           </div>
 
           {/* Configuration Panel (Conditional) */}
