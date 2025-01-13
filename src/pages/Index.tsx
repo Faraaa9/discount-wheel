@@ -36,8 +36,8 @@ const Index = () => {
         </h1>
         
         <div className="flex flex-col items-center justify-center min-h-[800px] relative">
-          {/* Configuration Toggle */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-2">
+          {/* Configuration Toggle - Moved to top right */}
+          <div className="absolute top-0 right-0 z-20 flex items-center space-x-2">
             <Switch
               id="config-mode"
               checked={showConfig}
@@ -46,13 +46,15 @@ const Index = () => {
             <Label htmlFor="config-mode">Configuration Mode</Label>
           </div>
 
-          {/* Main Wheel Section */}
-          <div className="w-full max-w-xl mx-auto mb-8">
-            <SpinningWheel 
-              segments={segments}
-              onSpinEnd={handleSpinEnd}
-            />
-          </div>
+          {/* Main Wheel Section - Hidden when config is shown */}
+          {!showConfig && (
+            <div className="w-full max-w-xl mx-auto mb-8">
+              <SpinningWheel 
+                segments={segments}
+                onSpinEnd={handleSpinEnd}
+              />
+            </div>
+          )}
 
           {/* Configuration Panel (Conditional) */}
           {showConfig && (
