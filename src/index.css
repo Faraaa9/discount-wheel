@@ -59,14 +59,12 @@
 }
 
 .wheel-container {
-  @apply relative;
+  @apply relative mx-auto;
   width: 1000px;
   height: 1000px;
   perspective: 1000px;
   transform-style: preserve-3d;
   margin-top: 3rem;
-  margin-right: 1000px;
-  margin-left: auto;
 }
 
 .spin-button {

@@ -15,8 +15,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     if (!canvasRef.current) return;
 
     const canvas = new Canvas(canvasRef.current, {
-      width: 1500,
-      height: 2000,
+      width: 1000,
+      height: 1000,
       centeredRotation: true,
       selection: true
     });
