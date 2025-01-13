@@ -1,13 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Canvas, Path, Text, util } from 'fabric';
-import { Button } from '@/components/ui/button';
+import { useRef, useState } from 'react';
+import { Canvas, util } from 'fabric';
 import { toast } from 'sonner';
-
-interface WheelSegment {
-  text: string;
-  probability: number;
-  color: string;
-}
+import { WheelCanvas } from './wheel/WheelCanvas';
+import { SpinButton } from './wheel/SpinButton';
+import type { WheelSegment } from './wheel/types';
 
 interface SpinningWheelProps {
   segments: WheelSegment[];
@@ -15,81 +11,19 @@ interface SpinningWheelProps {
 }
 
 export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fabricRef = useRef<Canvas | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
+  const canvasRef = useRef<Canvas | null>(null);
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = new Canvas(canvasRef.current, {
-      width: 500,
-      height: 500,
-    });
-
-    fabricRef.current = canvas;
-    drawWheel();
-
-    return () => {
-      canvas.dispose();
-    };
-  }, [segments]);
-
-  const drawWheel = () => {
-    if (!fabricRef.current) return;
-
-    const canvas = fabricRef.current;
-    canvas.clear();
-
-    const centerX = canvas.getWidth() / 2;
-    const centerY = canvas.getHeight() / 2;
-    const radius = Math.min(centerX, centerY) - 10;
-
-    let startAngle = 0;
-    const totalProbability = segments.reduce((sum, segment) => sum + segment.probability, 0);
-
-    segments.forEach((segment) => {
-      const angle = (segment.probability / totalProbability) * 2 * Math.PI;
-      
-      // Draw segment
-      const path = new Path([
-        'M', centerX, centerY,
-        'L', centerX + radius * Math.cos(startAngle), centerY + radius * Math.sin(startAngle),
-        'A', radius, radius, 0, angle > Math.PI ? 1 : 0, 1,
-        centerX + radius * Math.cos(startAngle + angle),
-        centerY + radius * Math.sin(startAngle + angle),
-        'Z'
-      ].join(' '), {
-        fill: segment.color,
-        selectable: false
-      });
-
-      canvas.add(path);
-
-      // Add text
-      const textAngle = startAngle + angle / 2;
-      const text = new Text(segment.text, {
-        left: centerX + (radius * 0.7) * Math.cos(textAngle),
-        top: centerY + (radius * 0.7) * Math.sin(textAngle),
-        fontSize: 16,
-        fill: '#FFFFFF',
-        originX: 'center',
-        originY: 'center',
-        angle: (textAngle * 180 / Math.PI) + 90,
-        selectable: false
-      });
-
-      canvas.add(text);
-      startAngle += angle;
-    });
-
-    canvas.renderAll();
+  const handleCanvasReady = (canvas: Canvas) => {
+    canvasRef.current = canvas;
   };
 
   const spinWheel = () => {
-    if (isSpinning) return;
+    if (isSpinning || !canvasRef.current) return;
     
     setIsSpinning(true);
+    const canvas = canvasRef.current;
+    
     const totalProbability = segments.reduce((sum, segment) => sum + segment.probability, 0);
     const randomValue = Math.random() * totalProbability;
     
@@ -109,14 +43,11 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
     }
 
     // Calculate rotation
-    const canvas = fabricRef.current;
-    if (!canvas) return;
-
     const currentRotation = canvas.getObjects()[0]?.angle || 0;
     const targetRotation = currentRotation + 1440 + Math.random() * 360; // Spin 4 times + random
 
     canvas.getObjects().forEach(obj => {
-      obj.animate('angle', targetRotation, {
+      obj.animate({ angle: targetRotation }, {
         duration: 3000,
         onChange: () => canvas.renderAll(),
         easing: util.ease.easeOutCubic,
@@ -133,14 +64,14 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
 
   return (
     <div className="wheel-container">
-      <canvas ref={canvasRef} className="w-full h-full" />
-      <Button 
-        onClick={spinWheel} 
-        disabled={isSpinning}
-        className="spin-button"
-      >
-        {isSpinning ? 'Spinning...' : 'SPIN!'}
-      </Button>
+      <WheelCanvas 
+        segments={segments}
+        onCanvasReady={handleCanvasReady}
+      />
+      <SpinButton 
+        isSpinning={isSpinning}
+        onClick={spinWheel}
+      />
     </div>
   );
 };
