@@ -39,7 +39,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
 
     const centerX = canvas.getWidth() / 2;
     const centerY = canvas.getHeight() / 2;
-    const radius = Math.min(centerX, centerY) - 20;
+    // Reduce the radius by multiplying by 0.8 (80% of original size)
+    const radius = (Math.min(centerX, centerY) - 20) * 0.8;
 
     let startAngle = 0;
     const totalSpace = segments.reduce((sum, segment) => sum + segment.spaceAmount, 0);
