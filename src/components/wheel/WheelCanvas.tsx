@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Canvas, Path, Text } from 'fabric';
+import { Canvas, Path, Text, Shadow, Circle } from 'fabric';
 import { WheelSegment } from './types';
 
 interface WheelCanvasProps {
@@ -107,7 +107,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     });
 
     // Add center decoration
-    const centerCircle = new Path.Circle({
+    const centerCircle = new Circle({
       left: centerX - 15,
       top: centerY - 15,
       radius: 15,
