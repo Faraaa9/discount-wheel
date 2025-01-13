@@ -4,10 +4,10 @@ import { AdminPanel } from '@/components/AdminPanel';
 import { SaleForm } from '@/components/SaleForm';
 
 const initialSegments = [
-  { text: '10% OFF', probability: 30, color: '#8B5CF6' },
-  { text: '20% OFF', probability: 20, color: '#0EA5E9' },
-  { text: '30% OFF', probability: 10, color: '#10B981' },
-  { text: 'Try Again', probability: 40, color: '#6B7280' },
+  { text: '10% OFF', probability: 30, color: '#FF6B6B' },  // Coral Red
+  { text: '20% OFF', probability: 20, color: '#4ECDC4' },  // Turquoise
+  { text: '30% OFF', probability: 10, color: '#45B7D1' },  // Sky Blue
+  { text: 'Try Again', probability: 40, color: '#96CEB4' }, // Sage Green
 ];
 
 const Index = () => {
