@@ -19,13 +19,17 @@ const Index = () => {
   const [segments, setSegments] = useState(initialSegments);
   const [currentDiscount, setCurrentDiscount] = useState('');
   const [showConfig, setShowConfig] = useState(false);
+  const [showSaleForm, setShowSaleForm] = useState(false);
 
   const handleSpinEnd = (segment: typeof initialSegments[0]) => {
     setCurrentDiscount(segment.text);
+    setShowSaleForm(true);
   };
 
   const handleSaleSubmit = (saleNumber: string) => {
     console.log('Sale recorded:', { discount: currentDiscount, saleNumber });
+    setShowSaleForm(false);
+    setCurrentDiscount('');
   };
 
   return (
@@ -67,7 +71,7 @@ const Index = () => {
           )}
 
           {/* Sale Form (Conditional) */}
-          {currentDiscount && !showConfig && (
+          {showSaleForm && !showConfig && (
             <div className="w-full max-w-md mt-8">
               <SaleForm
                 discount={currentDiscount}
