@@ -3,6 +3,7 @@ import { Canvas, util } from 'fabric';
 import { toast } from 'sonner';
 import { WheelCanvas } from './wheel/WheelCanvas';
 import { SpinButton } from './wheel/SpinButton';
+import { WinningDialog } from './wheel/WinningDialog';
 import type { WheelSegment } from './wheel/types';
 
 interface SpinningWheelProps {
@@ -12,6 +13,8 @@ interface SpinningWheelProps {
 
 export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
   const [isSpinning, setIsSpinning] = useState(false);
+  const [showWinDialog, setShowWinDialog] = useState(false);
+  const [winningSegment, setWinningSegment] = useState<WheelSegment | null>(null);
   const canvasRef = useRef<Canvas | null>(null);
 
   const handleCanvasReady = (canvas: Canvas) => {
@@ -61,7 +64,9 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
           if (onSpinEnd && selectedSegment) {
             onSpinEnd(selectedSegment);
           }
-          toast.success(`You won: ${selectedSegment!.text}!`);
+          setWinningSegment(selectedSegment);
+          setShowWinDialog(true);
+          toast.success(`Jūs laimėjote: ${selectedSegment!.text}!`);
         },
       });
     });
@@ -76,6 +81,11 @@ export const SpinningWheel = ({ segments, onSpinEnd }: SpinningWheelProps) => {
       <SpinButton 
         isSpinning={isSpinning}
         onClick={spinWheel}
+      />
+      <WinningDialog 
+        isOpen={showWinDialog}
+        onClose={() => setShowWinDialog(false)}
+        segment={winningSegment}
       />
     </div>
   );
