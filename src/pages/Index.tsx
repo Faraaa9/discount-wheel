@@ -6,10 +6,13 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
 const initialSegments = [
-  { text: '10% OFF', probability: 30, color: '#FF6B6B' },
-  { text: '20% OFF', probability: 20, color: '#4ECDC4' },
-  { text: '30% OFF', probability: 10, color: '#45B7D1' },
-  { text: 'Try Again', probability: 40, color: '#96CEB4' },
+  { text: 'Choice 6', probability: 1, color: '#FFFFFF' },  // White
+  { text: 'Choice 5', probability: 1, color: '#FEF7CD' },  // Yellow
+  { text: 'Choice 4', probability: 1, color: '#7E69AB' },  // Purple
+  { text: 'Choice 3', probability: 1, color: '#90EE90' },  // Green
+  { text: 'Choice 2', probability: 1, color: '#FFA500' },  // Orange
+  { text: 'Choice 1', probability: 1, color: '#FF0000' },  // Red
+  { text: 'Choice 7', probability: 1, color: '#87CEEB' },  // Light Blue
 ];
 
 const Index = () => {

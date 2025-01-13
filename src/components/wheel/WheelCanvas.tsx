@@ -51,13 +51,14 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       selectable: false,
     });
 
+    // Draw outer ring (white border)
     const outerRing = new Path([
       'M', -radius - 5, 0,
       'A', radius + 5, radius + 5, 0, 1, 1, radius + 5, 0,
       'A', radius + 5, radius + 5, 0, 1, 1, -radius - 5, 0,
     ].join(' '), {
       fill: 'transparent',
-      stroke: '#FFD700',
+      stroke: '#FFFFFF',
       strokeWidth: 10,
       selectable: false
     });
@@ -92,18 +93,18 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       const text = new Text(segment.text, {
         left: textRadius * Math.cos(textAngle),
         top: textRadius * Math.sin(textAngle),
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        fill: '#FFFFFF',
+        fill: '#000000', // Black text
         fontFamily: 'Arial',
         originX: 'center',
         originY: 'center',
         angle: (textAngle * 180 / Math.PI) + 90,
         shadow: new Shadow({
-          color: 'rgba(0,0,0,0.5)',
-          blur: 3,
-          offsetX: 2,
-          offsetY: 2
+          color: 'rgba(0,0,0,0.3)',
+          blur: 2,
+          offsetX: 1,
+          offsetY: 1
         }),
         selectable: false
       });
@@ -113,8 +114,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     });
 
     const centerCircle = new Circle({
-      radius: 15,
-      fill: '#FFD700',
+      radius: 25,
+      fill: '#FFFFFF',
       stroke: '#FFFFFF',
       strokeWidth: 2,
       selectable: false,
