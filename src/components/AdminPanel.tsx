@@ -46,9 +46,9 @@ export const AdminPanel = ({ segments: initialSegments, onUpdate }: AdminPanelPr
   return (
     <Card className="p-8 shadow-lg">
       <h2 className="text-2xl font-bold mb-6">Wheel Configuration</h2>
-      <div className="space-y-6">
+      <div className="space-y-8">
         {segments.map((segment, index) => (
-          <div key={index} className="grid grid-cols-4 gap-4 items-end">
+          <div key={index} className="grid grid-cols-4 gap-6 items-end">
             <div>
               <Label>Text</Label>
               <Input
