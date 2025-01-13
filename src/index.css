@@ -71,10 +71,8 @@
 }
 
 .spin-button {
-  @apply absolute 
-         left-1/2 top-1/2 
-         -translate-x-1/2 -translate-y-1/2
-         z-10 bg-gradient-to-r from-purple-500 to-purple-600 
+  @apply absolute z-10 
+         bg-gradient-to-r from-purple-500 to-purple-600 
          hover:from-purple-600 hover:to-purple-700
          text-white rounded-full w-28 h-28 
          flex items-center justify-center
@@ -82,7 +80,13 @@
          transition-all duration-300
          shadow-[0_0_20px_rgba(147,51,234,0.5)] 
          hover:shadow-[0_0_30px_rgba(147,51,234,0.7)];
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 0;
+  padding: 0;
 }
 
 @keyframes spin {
