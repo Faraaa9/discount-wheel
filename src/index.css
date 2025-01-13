@@ -65,7 +65,8 @@
   perspective: 1000px;
   transform-style: preserve-3d;
   margin-top: 3rem;
-  margin-left: 500px;
+  margin-right: 500px;
+  margin-left: auto;
 }
 
 .spin-button {
