@@ -40,7 +40,7 @@ const Index = () => {
         </h1>
         
         <div className="flex flex-col items-center justify-center min-h-[800px] relative">
-          {/* Configuration Toggle - Moved to top right */}
+          {/* Configuration Toggle - Top right */}
           <div className="absolute top-0 right-0 z-20 flex items-center space-x-2">
             <Switch
               id="config-mode"
@@ -49,6 +49,16 @@ const Index = () => {
             />
             <Label htmlFor="config-mode">Configuration Mode</Label>
           </div>
+
+          {/* Sale Form (Conditional) - Positioned above the wheel */}
+          {showSaleForm && !showConfig && (
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-10 w-full max-w-md">
+              <SaleForm
+                discount={currentDiscount}
+                onSubmit={handleSaleSubmit}
+              />
+            </div>
+          )}
 
           {/* Main Wheel Section - Hidden when config is shown */}
           {!showConfig && (
@@ -66,16 +76,6 @@ const Index = () => {
               <AdminPanel
                 segments={segments}
                 onUpdate={setSegments}
-              />
-            </div>
-          )}
-
-          {/* Sale Form (Conditional) */}
-          {showSaleForm && !showConfig && (
-            <div className="w-full max-w-md mt-8">
-              <SaleForm
-                discount={currentDiscount}
-                onSubmit={handleSaleSubmit}
               />
             </div>
           )}
