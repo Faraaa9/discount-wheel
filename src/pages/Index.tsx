@@ -24,6 +24,21 @@ const Index = () => {
   const [showSaleForm, setShowSaleForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const isValidSegment = (segment: any): segment is Segment => {
+    return (
+      typeof segment === 'object' &&
+      segment !== null &&
+      typeof segment.text === 'string' &&
+      typeof segment.probability === 'number' &&
+      typeof segment.spaceAmount === 'number' &&
+      typeof segment.color === 'string'
+    );
+  };
+
+  const isValidSegmentArray = (segments: any): segments is Segment[] => {
+    return Array.isArray(segments) && segments.every(isValidSegment);
+  };
+
   useEffect(() => {
     loadLatestConfiguration();
   }, []);
@@ -43,8 +58,13 @@ const Index = () => {
       }
 
       if (data && data.length > 0) {
-        const loadedSegments = data[0].segments as Segment[];
-        setSegments(loadedSegments);
+        const loadedSegments = data[0].segments;
+        if (isValidSegmentArray(loadedSegments)) {
+          setSegments(loadedSegments);
+        } else {
+          console.error('Invalid segment data structure');
+          toast.error('Invalid wheel configuration data');
+        }
       }
     } catch (error) {
       console.error('Error in loadLatestConfiguration:', error);
