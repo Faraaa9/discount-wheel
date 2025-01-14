@@ -26,6 +26,10 @@ const Index = () => {
     setShowSaleForm(true);
   };
 
+  const handleConfigUpdate = (newSegments: Segment[]) => {
+    setSegments(newSegments);
+  };
+
   return (
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-7xl mx-auto px-6">
@@ -34,7 +38,6 @@ const Index = () => {
         </h1>
         
         <div className="flex flex-col items-center justify-center min-h-[800px] relative">
-          {/* Configuration Toggle - Top right */}
           <div className="absolute top-0 right-0 z-20 flex items-center space-x-2">
             <Switch
               id="config-mode"
@@ -44,29 +47,18 @@ const Index = () => {
             <Label htmlFor="config-mode">Configuration Mode</Label>
           </div>
 
-          {/* Current Discount Display */}
-          {showSaleForm && !showConfig && currentDiscount && (
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-10 text-center mb-6">
-              <h2 className="text-2xl text-gray-600 mb-2">Sveikinu, Jums pasisekė!</h2>
-              <div className="text-6xl font-bold text-purple-600 mb-8">
-                {currentDiscount}
-              </div>
-            </div>
-          )}
-
-          {/* Main Wheel Section - Hidden when config is shown */}
-          {!showConfig && (
+          {showConfig ? (
+            <WheelConfigManager
+              initialSegments={segments}
+              onConfigUpdate={handleConfigUpdate}
+            />
+          ) : (
             <WheelDisplay 
               segments={segments}
               onSpinEnd={handleSpinEnd}
-            />
-          )}
-
-          {/* Configuration Panel (Conditional) */}
-          {showConfig && (
-            <WheelConfigManager
-              initialSegments={initialSegments}
-              onConfigUpdate={setSegments}
+              showSaleForm={showSaleForm}
+              setShowSaleForm={setShowSaleForm}
+              currentDiscount={currentDiscount}
             />
           )}
         </div>

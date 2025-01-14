@@ -37,7 +37,7 @@ export const WheelConfigManager = ({ onConfigUpdate, initialSegments }: WheelCon
         if (isValidSegmentArray(loadedSegments)) {
           setSegments(loadedSegments);
           setConfigId(data[0].id);
-          onConfigUpdate(loadedSegments);
+          onConfigUpdate(loadedSegments); // Update parent state
         } else {
           console.error('Invalid segment data structure');
           toast.error('Invalid wheel configuration data');
@@ -76,7 +76,7 @@ export const WheelConfigManager = ({ onConfigUpdate, initialSegments }: WheelCon
     if (newConfig) {
       setConfigId(newConfig.id);
       setSegments(initialSegments);
-      onConfigUpdate(initialSegments);
+      onConfigUpdate(initialSegments); // Update parent state
     }
   };
 
@@ -104,7 +104,7 @@ export const WheelConfigManager = ({ onConfigUpdate, initialSegments }: WheelCon
       }
 
       setSegments(newSegments);
-      onConfigUpdate(newSegments);
+      onConfigUpdate(newSegments); // Update parent state
       toast.success('Wheel configuration saved successfully!');
     } catch (error) {
       console.error('Error in handleConfigUpdate:', error);
