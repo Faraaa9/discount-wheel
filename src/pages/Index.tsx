@@ -110,9 +110,12 @@ const Index = () => {
     setShowSaleForm(true);
     
     if (publicKey) {
-      // Here you would implement the logic to transfer the prize pool to the winner
       toast.success(`Congratulations! You've won the prize pool!`);
     }
+  };
+
+  const handleConfigUpdate = (newSegments: Segment[]) => {
+    setSegments(newSegments);
   };
 
   if (isLoading) {
