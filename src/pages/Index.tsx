@@ -3,9 +3,11 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { WheelConfigManager } from '@/components/wheel/WheelConfigManager';
 import { WheelDisplay } from '@/components/wheel/WheelDisplay';
+import { SpaceManager } from '@/components/wheel/SpaceManager';
 import { Segment } from '@/types/wheel';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const initialSegments: Segment[] = [
   { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },  // White
@@ -23,6 +25,9 @@ const Index = () => {
   const [showConfig, setShowConfig] = useState(false);
   const [showSaleForm, setShowSaleForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [remainingSpace, setRemainingSpace] = useState(100);
+  const [gameInProgress, setGameInProgress] = useState(false);
+  const { publicKey } = useWallet();
 
   const isValidSegment = (segment: any): segment is Segment => {
     return (
@@ -74,13 +79,40 @@ const Index = () => {
     }
   };
 
+  const handleSpacePurchased = (percentage: number) => {
+    setRemainingSpace(prev => prev - percentage);
+    
+    // If all space is purchased, start the countdown
+    if (remainingSpace - percentage <= 0) {
+      setGameInProgress(true);
+      startGameCountdown();
+    }
+  };
+
+  const startGameCountdown = () => {
+    let countdown = 3;
+    const timer = setInterval(() => {
+      if (countdown > 0) {
+        toast.info(`Game starting in ${countdown}...`);
+        countdown--;
+      } else {
+        clearInterval(timer);
+        // Trigger wheel spin
+        handleSpinEnd(segments[0]); // You'll need to modify this to pick a random segment
+        setGameInProgress(false);
+        setRemainingSpace(100); // Reset for next game
+      }
+    }, 1000);
+  };
+
   const handleSpinEnd = (segment: Segment) => {
     setCurrentDiscount(segment.text);
     setShowSaleForm(true);
-  };
-
-  const handleConfigUpdate = (newSegments: Segment[]) => {
-    setSegments(newSegments);
+    
+    if (publicKey) {
+      // Here you would implement the logic to transfer the prize pool to the winner
+      toast.success(`Congratulations! You've won the prize pool!`);
+    }
   };
 
   if (isLoading) {
@@ -95,7 +127,7 @@ const Index = () => {
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-7xl mx-auto px-6">
         <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">
-          Laimės ratas
+          Solana Prize Wheel
         </h1>
         
         <div className="flex flex-col items-center justify-center min-h-[800px] relative">
@@ -107,6 +139,12 @@ const Index = () => {
             />
             <Label htmlFor="config-mode">Configuration Mode</Label>
           </div>
+
+          <SpaceManager
+            onSpacePurchased={handleSpacePurchased}
+            remainingSpace={remainingSpace}
+            gameInProgress={gameInProgress}
+          />
 
           {showConfig ? (
             <WheelConfigManager
