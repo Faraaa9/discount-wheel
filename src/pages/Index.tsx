@@ -1,7 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { WheelConfigManager } from '@/components/wheel/WheelConfigManager';
 import { WheelDisplay } from '@/components/wheel/WheelDisplay';
 import { SpaceManager } from '@/components/wheel/SpaceManager';
 import { Segment } from '@/types/wheel';
@@ -10,19 +7,18 @@ import { toast } from 'sonner';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 const initialSegments: Segment[] = [
-  { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },  // White
-  { text: 'Choice 5', probability: 1, spaceAmount: 1, color: '#FEF7CD' },  // Yellow
-  { text: 'Choice 4', probability: 1, spaceAmount: 1, color: '#7E69AB' },  // Purple
-  { text: 'Choice 3', probability: 1, spaceAmount: 1, color: '#90EE90' },  // Green
-  { text: 'Choice 2', probability: 1, spaceAmount: 1, color: '#FFA500' },  // Orange
-  { text: 'Choice 1', probability: 1, spaceAmount: 1, color: '#FF0000' },  // Red
-  { text: 'Choice 7', probability: 1, spaceAmount: 1, color: '#87CEEB' },  // Light Blue
+  { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },
+  { text: 'Choice 5', probability: 1, spaceAmount: 1, color: '#FEF7CD' },
+  { text: 'Choice 4', probability: 1, spaceAmount: 1, color: '#7E69AB' },
+  { text: 'Choice 3', probability: 1, spaceAmount: 1, color: '#90EE90' },
+  { text: 'Choice 2', probability: 1, spaceAmount: 1, color: '#FFA500' },
+  { text: 'Choice 1', probability: 1, spaceAmount: 1, color: '#FF0000' },
+  { text: 'Choice 7', probability: 1, spaceAmount: 1, color: '#87CEEB' },
 ];
 
 const Index = () => {
   const [segments, setSegments] = useState<Segment[]>(initialSegments);
   const [currentDiscount, setCurrentDiscount] = useState('');
-  const [showConfig, setShowConfig] = useState(false);
   const [showSaleForm, setShowSaleForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [remainingSpace, setRemainingSpace] = useState(100);
@@ -82,7 +78,6 @@ const Index = () => {
   const handleSpacePurchased = (percentage: number) => {
     setRemainingSpace(prev => prev - percentage);
     
-    // If all space is purchased, start the countdown
     if (remainingSpace - percentage <= 0) {
       setGameInProgress(true);
       startGameCountdown();
@@ -97,10 +92,9 @@ const Index = () => {
         countdown--;
       } else {
         clearInterval(timer);
-        // Trigger wheel spin
-        handleSpinEnd(segments[0]); // You'll need to modify this to pick a random segment
+        handleSpinEnd(segments[0]);
         setGameInProgress(false);
-        setRemainingSpace(100); // Reset for next game
+        setRemainingSpace(100);
       }
     }, 1000);
   };
@@ -112,10 +106,6 @@ const Index = () => {
     if (publicKey) {
       toast.success(`Congratulations! You've won the prize pool!`);
     }
-  };
-
-  const handleConfigUpdate = (newSegments: Segment[]) => {
-    setSegments(newSegments);
   };
 
   if (isLoading) {
@@ -133,28 +123,16 @@ const Index = () => {
           Solana Prize Wheel
         </h1>
         
-        <div className="flex flex-col items-center justify-center min-h-[800px] relative">
-          <div className="absolute top-0 right-0 z-20 flex items-center space-x-2">
-            <Switch
-              id="config-mode"
-              checked={showConfig}
-              onCheckedChange={setShowConfig}
+        <div className="flex flex-col items-center justify-center gap-8">
+          <div className="w-full max-w-md">
+            <SpaceManager
+              onSpacePurchased={handleSpacePurchased}
+              remainingSpace={remainingSpace}
+              gameInProgress={gameInProgress}
             />
-            <Label htmlFor="config-mode">Configuration Mode</Label>
           </div>
 
-          <SpaceManager
-            onSpacePurchased={handleSpacePurchased}
-            remainingSpace={remainingSpace}
-            gameInProgress={gameInProgress}
-          />
-
-          {showConfig ? (
-            <WheelConfigManager
-              initialSegments={segments}
-              onConfigUpdate={handleConfigUpdate}
-            />
-          ) : (
+          <div className="relative w-full flex justify-center">
             <WheelDisplay 
               segments={segments}
               onSpinEnd={handleSpinEnd}
@@ -162,7 +140,7 @@ const Index = () => {
               setShowSaleForm={setShowSaleForm}
               currentDiscount={currentDiscount}
             />
-          )}
+          </div>
         </div>
       </div>
     </div>
