@@ -6,6 +6,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 
 interface SpaceManagerProps {
   onSpacePurchased: (percentage: number) => void;
@@ -13,7 +14,11 @@ interface SpaceManagerProps {
   gameInProgress: boolean;
 }
 
-export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress }: SpaceManagerProps) => {
+export const SpaceManager = ({ 
+  onSpacePurchased, 
+  remainingSpace, 
+  gameInProgress 
+}: SpaceManagerProps) => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -21,17 +26,14 @@ export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress 
 
   const handlePurchaseSpace = async () => {
     if (!publicKey || !connection || spacePercentage <= 0 || spacePercentage > remainingSpace) {
-      toast.error('Invalid purchase attempt');
       return;
     }
 
     try {
       setIsProcessing(true);
+      const gameWallet = new PublicKey('YOUR_GAME_WALLET_ADDRESS');
       const solAmount = spacePercentage / 100;
       const lamports = solAmount * LAMPORTS_PER_SOL;
-
-      // Replace with your game wallet address
-      const gameWallet = new PublicKey('YOUR_GAME_WALLET_ADDRESS');
 
       const transaction = new Transaction().add(
         SystemProgram.transfer({
@@ -46,6 +48,7 @@ export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress 
 
       onSpacePurchased(spacePercentage);
       toast.success(`Successfully purchased ${spacePercentage}% of wheel space!`);
+      setSpacePercentage(0);
     } catch (error) {
       console.error('Transaction error:', error);
       toast.error('Failed to purchase space');
@@ -55,21 +58,27 @@ export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress 
   };
 
   return (
-    <Card className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-900">Purchase Wheel Space</h2>
-          <WalletMultiButton className="!bg-purple-600 hover:!bg-purple-700 transition-colors" />
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold text-purple-900">Purchase Space</h2>
+        <WalletMultiButton className="!bg-purple-600 hover:!bg-purple-700" />
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <span>Available Space</span>
+            <span className="font-medium text-purple-600">{remainingSpace}%</span>
+          </div>
+          <Progress value={100 - remainingSpace} className="h-2" />
         </div>
-        
+
         {!gameInProgress && remainingSpace > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-600">Available Space</span>
-              <span className="text-lg font-semibold text-purple-600">{remainingSpace}%</span>
-            </div>
-            
+          <Card className="p-4 space-y-4 bg-purple-50 border-purple-100">
             <div className="space-y-2">
+              <label className="text-sm font-medium text-purple-900">
+                Space Percentage
+              </label>
               <Input
                 type="number"
                 min={1}
@@ -77,31 +86,30 @@ export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress 
                 value={spacePercentage}
                 onChange={(e) => setSpacePercentage(Number(e.target.value))}
                 placeholder="Enter percentage"
-                className="text-lg border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                className="border-purple-200 focus:border-purple-500"
               />
-              
-              <Button
-                onClick={handlePurchaseSpace}
-                disabled={!publicKey || isProcessing || spacePercentage <= 0 || spacePercentage > remainingSpace}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white text-lg py-6 rounded-lg transition-all transform hover:scale-[1.02] disabled:scale-100"
-              >
-                {isProcessing ? 'Processing...' : 'Purchase Space'}
-              </Button>
-              
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm text-purple-600">
                 Cost: {(spacePercentage / 100).toFixed(2)} SOL
               </p>
             </div>
-          </div>
+
+            <Button
+              onClick={handlePurchaseSpace}
+              disabled={!publicKey || isProcessing || spacePercentage <= 0 || spacePercentage > remainingSpace}
+              className="w-full bg-purple-600 hover:bg-purple-700"
+            >
+              {isProcessing ? 'Processing...' : 'Purchase Space'}
+            </Button>
+          </Card>
         )}
-        
+
         {gameInProgress && (
-          <div className="text-center py-4">
-            <p className="text-lg font-semibold text-purple-600">Game in progress!</p>
-            <p className="text-sm text-gray-500">Wait for the current game to finish</p>
+          <div className="text-center py-6">
+            <p className="text-lg font-medium text-purple-900">Game in Progress!</p>
+            <p className="text-sm text-purple-600">Wait for the current game to finish</p>
           </div>
         )}
       </div>
-    </Card>
+    </div>
   );
 };

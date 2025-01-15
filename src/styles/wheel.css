@@ -1,29 +1,31 @@
 .wheel-container {
-  @apply relative;
-  width: 800px;
-  height: 800px;
+  @apply relative mx-auto;
+  width: 600px;
+  height: 600px;
   perspective: 1000px;
   transform-style: preserve-3d;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .spin-button {
   @apply absolute z-10 
-         text-white rounded-full w-24 h-24 
+         bg-purple-600 text-white 
+         rounded-full w-24 h-24 
          flex items-center justify-center
          text-xl font-bold cursor-pointer 
          shadow-[0_0_20px_rgba(147,51,234,0.5)] 
-         hover:shadow-[0_0_30px_rgba(147,51,234,0.7)];
+         hover:shadow-[0_0_30px_rgba(147,51,234,0.7)]
+         hover:bg-purple-700
+         transition-all duration-300
+         transform hover:scale-105;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  margin: 0;
-  padding: 0;
+}
+
+.spin-button:disabled {
+  @apply bg-purple-400 cursor-not-allowed transform-none;
 }
 
 @keyframes spin {
@@ -37,4 +39,12 @@
 
 .wheel-spinning {
   animation: spin 1s linear infinite;
+}
+
+.wheel-segment {
+  @apply transition-all duration-300;
+}
+
+.wheel-segment:hover {
+  filter: brightness(1.1);
 }
