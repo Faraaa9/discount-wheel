@@ -5,6 +5,7 @@ import { Segment } from '@/types/wheel';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const initialSegments: Segment[] = [
   { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },
@@ -16,6 +17,12 @@ const initialSegments: Segment[] = [
   { text: 'Choice 7', probability: 1, spaceAmount: 1, color: '#87CEEB' },
 ];
 
+interface SpacePurchase {
+  wallet: string;
+  percentage: number;
+  amount: number;
+}
+
 const Index = () => {
   const [segments, setSegments] = useState<Segment[]>(initialSegments);
   const [currentDiscount, setCurrentDiscount] = useState('');
@@ -23,6 +30,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [remainingSpace, setRemainingSpace] = useState(100);
   const [gameInProgress, setGameInProgress] = useState(false);
+  const [purchases, setPurchases] = useState<SpacePurchase[]>([]);
   const { publicKey } = useWallet();
 
   const isValidSegment = (segment: any): segment is Segment => {
@@ -76,6 +84,15 @@ const Index = () => {
   };
 
   const handleSpacePurchased = (percentage: number) => {
+    if (publicKey) {
+      const newPurchase: SpacePurchase = {
+        wallet: publicKey.toString().slice(0, 6) + '...' + publicKey.toString().slice(-4),
+        percentage,
+        amount: percentage / 100,
+      };
+      setPurchases([...purchases, newPurchase]);
+    }
+    
     setRemainingSpace(prev => prev - percentage);
     
     if (remainingSpace - percentage <= 0) {
@@ -95,6 +112,7 @@ const Index = () => {
         handleSpinEnd(segments[0]);
         setGameInProgress(false);
         setRemainingSpace(100);
+        setPurchases([]); // Clear purchases after game ends
       }
     }, 1000);
   };
@@ -140,6 +158,40 @@ const Index = () => {
               setShowSaleForm={setShowSaleForm}
               currentDiscount={currentDiscount}
             />
+          </div>
+
+          <div className="w-full max-w-4xl mt-8">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-2xl font-semibold mb-4">Current Game Purchases</h2>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Wallet</TableHead>
+                    <TableHead>Space Percentage</TableHead>
+                    <TableHead>Amount (SOL)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {purchases.map((purchase, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-mono">{purchase.wallet}</TableCell>
+                      <TableCell>{purchase.percentage}%</TableCell>
+                      <TableCell>{purchase.amount} SOL</TableCell>
+                    </TableRow>
+                  ))}
+                  {purchases.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center text-gray-500">
+                        No purchases yet
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+              <div className="mt-4 text-right text-sm text-gray-600">
+                Remaining Space: {remainingSpace}%
+              </div>
+            </div>
           </div>
         </div>
       </div>
