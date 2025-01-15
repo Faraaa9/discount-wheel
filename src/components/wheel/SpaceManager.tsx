@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { LAMPORTS_PER_SOL, PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { WalletStatus } from '../wallet/WalletStatus';
+import { PurchaseForm } from '../wallet/PurchaseForm';
+import { GameStatus } from '../game/GameStatus';
 
 interface SpaceManagerProps {
   onSpacePurchased: (percentage: number) => void;
@@ -15,10 +15,9 @@ interface SpaceManagerProps {
 export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress }: SpaceManagerProps) => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
-  const [spacePercentage, setSpacePercentage] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handlePurchaseSpace = async () => {
+  const handlePurchaseSpace = async (spacePercentage: number) => {
     if (!publicKey || !connection || spacePercentage <= 0 || spacePercentage > remainingSpace) {
       toast.error('Invalid purchase attempt');
       return;
@@ -26,7 +25,7 @@ export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress 
 
     try {
       setIsProcessing(true);
-      const solAmount = spacePercentage / 100; // Convert percentage to SOL
+      const solAmount = spacePercentage / 100;
       const lamports = solAmount * LAMPORTS_PER_SOL;
 
       // Replace with your game wallet address
@@ -45,7 +44,6 @@ export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress 
 
       onSpacePurchased(spacePercentage);
       toast.success(`Successfully purchased ${spacePercentage}% of wheel space!`);
-      setSpacePercentage(0);
     } catch (error) {
       console.error('Transaction error:', error);
       toast.error('Failed to purchase space');
@@ -56,41 +54,18 @@ export const SpaceManager = ({ onSpacePurchased, remainingSpace, gameInProgress 
 
   return (
     <div className="space-y-4 p-4 bg-white rounded-lg shadow">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Purchase Wheel Space</h3>
-        <WalletMultiButton />
-      </div>
+      <WalletStatus />
       
       {!gameInProgress && remainingSpace > 0 && (
-        <div className="space-y-2">
-          <p>Remaining space: {remainingSpace}%</p>
-          <div className="flex gap-2">
-            <Input
-              type="number"
-              min={1}
-              max={remainingSpace}
-              value={spacePercentage}
-              onChange={(e) => setSpacePercentage(Number(e.target.value))}
-              placeholder="Enter percentage"
-            />
-            <Button
-              onClick={handlePurchaseSpace}
-              disabled={!publicKey || isProcessing || spacePercentage <= 0 || spacePercentage > remainingSpace}
-            >
-              {isProcessing ? 'Processing...' : 'Purchase Space'}
-            </Button>
-          </div>
-          <p className="text-sm text-gray-500">
-            Cost: {(spacePercentage / 100).toFixed(2)} SOL
-          </p>
-        </div>
+        <PurchaseForm
+          remainingSpace={remainingSpace}
+          onPurchase={handlePurchaseSpace}
+          isProcessing={isProcessing}
+          isWalletConnected={!!publicKey}
+        />
       )}
       
-      {gameInProgress && (
-        <div className="text-center">
-          <p>Game in progress! Please wait for the next round.</p>
-        </div>
-      )}
+      <GameStatus gameInProgress={gameInProgress} />
     </div>
   );
 };
