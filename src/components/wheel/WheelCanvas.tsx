@@ -18,7 +18,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       width: 1000,
       height: 1000,
       centeredRotation: true,
-      selection: true,
+      selection: false,
       renderOnAddRemove: true
     });
 
@@ -26,8 +26,24 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     onCanvasReady(canvas);
     drawWheel();
 
+    // Cleanup function
     return () => {
-      canvas.dispose();
+      if (fabricRef.current) {
+        // Stop all animations
+        fabricRef.current.getObjects().forEach(obj => {
+          obj.animate('angle', obj.angle || 0, {
+            duration: 0,
+            onChange: () => fabricRef.current?.renderAll(),
+          });
+        });
+        
+        // Clear all objects
+        fabricRef.current.clear();
+        
+        // Dispose of the canvas
+        fabricRef.current.dispose();
+        fabricRef.current = null;
+      }
     };
   }, [segments]);
 
@@ -39,7 +55,6 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
 
     const centerX = canvas.getWidth() / 2;
     const centerY = canvas.getHeight() / 2;
-    // Reduce the radius by multiplying by 0.8 (80% of original size)
     const radius = (Math.min(centerX, centerY) - 20) * 0.8;
 
     let startAngle = 0;
@@ -50,10 +65,12 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       top: centerY,
       originX: 'center',
       originY: 'center',
-      selectable: true,
-      hasControls: true,
-      hasBorders: true,
-      lockRotation: true,
+      selectable: false,
+      hasControls: false,
+      hasBorders: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      lockRotation: false,
     });
 
     // Draw outer ring (white border)
