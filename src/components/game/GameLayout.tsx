@@ -34,21 +34,21 @@ export const GameLayout = ({
   purchases,
 }: GameLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-purple-900 mb-2">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-extrabold text-purple-900 mb-4">
             Solana Prize Wheel
           </h1>
-          <p className="text-lg text-purple-600">
-            Purchase space, spin the wheel, win prizes!
+          <p className="text-xl text-purple-600 max-w-2xl mx-auto">
+            Join the excitement! Purchase space on our wheel and spin for amazing prizes.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Column - Space Manager */}
-          <div className="lg:col-span-4">
-            <div className="bg-white rounded-2xl shadow-xl p-6 border border-purple-100">
+          <div className="lg:col-span-4 space-y-8">
+            <div className="bg-white rounded-3xl shadow-xl p-8 border border-purple-100 transform hover:scale-[1.02] transition-transform duration-300">
               <SpaceManager
                 onSpacePurchased={onSpacePurchased}
                 remainingSpace={remainingSpace}
@@ -58,8 +58,8 @@ export const GameLayout = ({
           </div>
 
           {/* Center Column - Wheel */}
-          <div className="lg:col-span-4 flex justify-center items-start">
-            <div className="relative">
+          <div className="lg:col-span-4">
+            <div className="bg-white rounded-3xl shadow-xl p-8 border border-purple-100 flex items-center justify-center transform hover:scale-[1.02] transition-transform duration-300">
               <WheelDisplay 
                 segments={segments}
                 onSpinEnd={onSpinEnd}
@@ -71,8 +71,8 @@ export const GameLayout = ({
           </div>
 
           {/* Right Column - Purchases Table */}
-          <div className="lg:col-span-4">
-            <div className="bg-white rounded-2xl shadow-xl p-6 border border-purple-100">
+          <div className="lg:col-span-4 space-y-8">
+            <div className="bg-white rounded-3xl shadow-xl p-8 border border-purple-100 transform hover:scale-[1.02] transition-transform duration-300">
               <PurchasesTable 
                 purchases={purchases}
                 remainingSpace={remainingSpace}

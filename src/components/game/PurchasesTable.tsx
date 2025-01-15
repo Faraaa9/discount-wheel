@@ -16,46 +16,46 @@ export const PurchasesTable = ({ purchases, remainingSpace }: PurchasesTableProp
   const totalPurchased = 100 - remainingSpace;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold text-purple-900 mb-2">Game Progress</h2>
-        <div className="space-y-2">
-          <Progress value={totalPurchased} className="h-2" />
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>{totalPurchased}% Purchased</span>
-            <span>{remainingSpace}% Available</span>
+        <h2 className="text-2xl font-bold text-purple-900 mb-4">Game Progress</h2>
+        <div className="space-y-4">
+          <Progress value={totalPurchased} className="h-3 bg-purple-100" />
+          <div className="flex justify-between text-sm">
+            <span className="font-medium text-purple-700">{totalPurchased}% Purchased</span>
+            <span className="font-medium text-purple-500">{remainingSpace}% Available</span>
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-lg font-medium text-purple-900 mb-4">Current Purchases</h3>
-        <div className="bg-purple-50 rounded-xl p-4">
+        <h3 className="text-xl font-semibold text-purple-900 mb-4">Current Purchases</h3>
+        <div className="bg-purple-50/50 rounded-2xl p-6">
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="text-purple-900">Wallet</TableHead>
-                <TableHead className="text-purple-900 text-right">Space</TableHead>
-                <TableHead className="text-purple-900 text-right">Amount</TableHead>
+              <TableRow className="hover:bg-transparent border-purple-200">
+                <TableHead className="text-purple-900 font-semibold">Wallet</TableHead>
+                <TableHead className="text-purple-900 font-semibold text-right">Space</TableHead>
+                <TableHead className="text-purple-900 font-semibold text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {purchases.map((purchase, index) => (
-                <TableRow key={index} className="hover:bg-purple-100/50">
-                  <TableCell className="font-mono text-purple-700">
+                <TableRow key={index} className="hover:bg-purple-100/30 border-purple-200">
+                  <TableCell className="font-mono text-purple-800">
                     {purchase.wallet}
                   </TableCell>
-                  <TableCell className="text-right text-purple-700">
+                  <TableCell className="text-right text-purple-800">
                     {purchase.percentage}%
                   </TableCell>
-                  <TableCell className="text-right text-purple-700">
+                  <TableCell className="text-right text-purple-800">
                     {purchase.amount} SOL
                   </TableCell>
                 </TableRow>
               ))}
               {purchases.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center text-gray-500 py-8">
+                  <TableCell colSpan={3} className="text-center text-purple-600 py-12">
                     No purchases yet. Be the first to join!
                   </TableCell>
                 </TableRow>
