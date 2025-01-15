@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Canvas, Path, Text, Shadow, Group } from 'fabric';
 import { WheelSegment } from './types';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface WheelCanvasProps {
   segments: WheelSegment[];
@@ -11,16 +10,15 @@ interface WheelCanvasProps {
 export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<Canvas | null>(null);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!canvasRef.current) return;
 
     const canvas = new Canvas(canvasRef.current, {
-      width: isMobile ? 350 : 1000,
-      height: isMobile ? 350 : 1000,
+      width: 1000,
+      height: 1000,
       centeredRotation: true,
-      selection: false,
+      selection: true,
       renderOnAddRemove: true
     });
 
@@ -28,20 +26,10 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     onCanvasReady(canvas);
     drawWheel();
 
-    const handleResize = () => {
-      if (!canvasRef.current || !fabricRef.current) return;
-      const size = window.innerWidth <= 768 ? 350 : 1000;
-      canvas.setDimensions({ width: size, height: size });
-      drawWheel();
-    };
-
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
       canvas.dispose();
     };
-  }, [segments, isMobile]);
+  }, [segments]);
 
   const drawWheel = () => {
     if (!fabricRef.current) return;
@@ -51,6 +39,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
 
     const centerX = canvas.getWidth() / 2;
     const centerY = canvas.getHeight() / 2;
+    // Reduce the radius by multiplying by 0.8 (80% of original size)
     const radius = (Math.min(centerX, centerY) - 20) * 0.8;
 
     let startAngle = 0;
@@ -61,11 +50,9 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       top: centerY,
       originX: 'center',
       originY: 'center',
-      selectable: false,
-      hasControls: false,
-      hasBorders: false,
-      lockMovementX: true,
-      lockMovementY: true,
+      selectable: true,
+      hasControls: true,
+      hasBorders: true,
       lockRotation: true,
     });
 
@@ -108,12 +95,10 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
 
       const textAngle = startAngle + angle / 2;
       const textRadius = radius * 0.65;
-      const fontSize = isMobile ? 16 : 24;
-      
       const text = new Text(segment.text, {
         left: textRadius * Math.cos(textAngle),
         top: textRadius * Math.sin(textAngle),
-        fontSize,
+        fontSize: 24,
         fontWeight: 'bold',
         fill: '#000000',
         fontFamily: 'Arial',

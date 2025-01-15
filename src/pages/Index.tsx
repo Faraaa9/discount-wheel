@@ -8,13 +8,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const initialSegments: Segment[] = [
-  { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },
-  { text: 'Choice 5', probability: 1, spaceAmount: 1, color: '#FEF7CD' },
-  { text: 'Choice 4', probability: 1, spaceAmount: 1, color: '#7E69AB' },
-  { text: 'Choice 3', probability: 1, spaceAmount: 1, color: '#90EE90' },
-  { text: 'Choice 2', probability: 1, spaceAmount: 1, color: '#FFA500' },
-  { text: 'Choice 1', probability: 1, spaceAmount: 1, color: '#FF0000' },
-  { text: 'Choice 7', probability: 1, spaceAmount: 1, color: '#87CEEB' },
+  { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },  // White
+  { text: 'Choice 5', probability: 1, spaceAmount: 1, color: '#FEF7CD' },  // Yellow
+  { text: 'Choice 4', probability: 1, spaceAmount: 1, color: '#7E69AB' },  // Purple
+  { text: 'Choice 3', probability: 1, spaceAmount: 1, color: '#90EE90' },  // Green
+  { text: 'Choice 2', probability: 1, spaceAmount: 1, color: '#FFA500' },  // Orange
+  { text: 'Choice 1', probability: 1, spaceAmount: 1, color: '#FF0000' },  // Red
+  { text: 'Choice 7', probability: 1, spaceAmount: 1, color: '#87CEEB' },  // Light Blue
 ];
 
 const Index = () => {
@@ -92,13 +92,13 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white py-6 px-4 md:py-12">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 md:mb-12">
+    <div className="min-h-screen bg-white py-12">
+      <div className="max-w-7xl mx-auto px-6">
+        <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">
           Laimės ratas
         </h1>
         
-        <div className="flex flex-col items-center justify-center min-h-[350px] md:min-h-[800px] relative">
+        <div className="flex flex-col items-center justify-center min-h-[800px] relative">
           <div className="absolute top-0 right-0 z-20 flex items-center space-x-2">
             <Switch
               id="config-mode"
