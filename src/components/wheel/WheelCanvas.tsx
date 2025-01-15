@@ -15,8 +15,8 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     if (!canvasRef.current) return;
 
     const canvas = new Canvas(canvasRef.current, {
-      width: 1000,
-      height: 1000,
+      width: 500,  // Reduced from 1000
+      height: 500, // Reduced from 1000
       centeredRotation: true,
       selection: false,
       renderOnAddRemove: true
@@ -26,21 +26,15 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     onCanvasReady(canvas);
     drawWheel();
 
-    // Cleanup function
     return () => {
       if (fabricRef.current) {
-        // Stop all animations by setting angle directly
         fabricRef.current.getObjects().forEach(obj => {
           if (obj.angle) {
             obj.set('angle', obj.angle);
             fabricRef.current?.renderAll();
           }
         });
-        
-        // Clear all objects
         fabricRef.current.clear();
-        
-        // Dispose of the canvas
         fabricRef.current.dispose();
         fabricRef.current = null;
       }
@@ -55,7 +49,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
 
     const centerX = canvas.getWidth() / 2;
     const centerY = canvas.getHeight() / 2;
-    const radius = (Math.min(centerX, centerY) - 20) * 0.8;
+    const radius = (Math.min(centerX, centerY) - 10) * 0.8; // Adjusted padding
 
     let startAngle = 0;
     const totalSpace = segments.reduce((sum, segment) => sum + segment.spaceAmount, 0);
@@ -81,7 +75,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     ].join(' '), {
       fill: 'transparent',
       stroke: '#FFFFFF',
-      strokeWidth: 10,
+      strokeWidth: 5, // Reduced from 10
       selectable: false
     });
     wheelGroup.add(outerRing);
@@ -99,12 +93,12 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       ].join(' '), {
         fill: segment.color,
         stroke: '#FFFFFF',
-        strokeWidth: 2,
+        strokeWidth: 1, // Reduced from 2
         shadow: new Shadow({
           color: 'rgba(0,0,0,0.2)',
-          blur: 10,
-          offsetX: 5,
-          offsetY: 5
+          blur: 5, // Reduced from 10
+          offsetX: 2, // Reduced from 5
+          offsetY: 2  // Reduced from 5
         }),
         selectable: false
       });
@@ -115,7 +109,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
       const text = new Text(segment.text, {
         left: textRadius * Math.cos(textAngle),
         top: textRadius * Math.sin(textAngle),
-        fontSize: 24,
+        fontSize: 16, // Reduced from 24
         fontWeight: 'bold',
         fill: '#000000',
         fontFamily: 'Arial',
@@ -124,7 +118,7 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
         angle: (textAngle * 180 / Math.PI) + 90,
         shadow: new Shadow({
           color: 'rgba(0,0,0,0.3)',
-          blur: 2,
+          blur: 1,
           offsetX: 1,
           offsetY: 1
         }),
