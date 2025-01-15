@@ -29,12 +29,12 @@ export const WheelCanvas = ({ segments, onCanvasReady }: WheelCanvasProps) => {
     // Cleanup function
     return () => {
       if (fabricRef.current) {
-        // Stop all animations
+        // Stop all animations by setting angle directly
         fabricRef.current.getObjects().forEach(obj => {
-          obj.animate('angle', obj.angle || 0, {
-            duration: 0,
-            onChange: () => fabricRef.current?.renderAll(),
-          });
+          if (obj.angle) {
+            obj.set('angle', obj.angle);
+            fabricRef.current?.renderAll();
+          }
         });
         
         // Clear all objects
