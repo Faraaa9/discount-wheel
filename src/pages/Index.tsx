@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { WheelDisplay } from '@/components/wheel/WheelDisplay';
-import { SpaceManager } from '@/components/wheel/SpaceManager';
 import { Segment } from '@/types/wheel';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { GameLayout } from '@/components/game/GameLayout';
 
 const initialSegments: Segment[] = [
   { text: 'Choice 6', probability: 1, spaceAmount: 1, color: '#FFFFFF' },
@@ -135,67 +133,17 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white py-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">
-          Solana Prize Wheel
-        </h1>
-        
-        <div className="flex flex-col items-center justify-center gap-8">
-          <div className="w-full max-w-md">
-            <SpaceManager
-              onSpacePurchased={handleSpacePurchased}
-              remainingSpace={remainingSpace}
-              gameInProgress={gameInProgress}
-            />
-          </div>
-
-          <div className="relative w-full flex justify-center">
-            <WheelDisplay 
-              segments={segments}
-              onSpinEnd={handleSpinEnd}
-              showSaleForm={showSaleForm}
-              setShowSaleForm={setShowSaleForm}
-              currentDiscount={currentDiscount}
-            />
-          </div>
-
-          <div className="w-full max-w-4xl mt-8">
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-semibold mb-4">Current Game Purchases</h2>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Wallet</TableHead>
-                    <TableHead>Space Percentage</TableHead>
-                    <TableHead>Amount (SOL)</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {purchases.map((purchase, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-mono">{purchase.wallet}</TableCell>
-                      <TableCell>{purchase.percentage}%</TableCell>
-                      <TableCell>{purchase.amount} SOL</TableCell>
-                    </TableRow>
-                  ))}
-                  {purchases.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center text-gray-500">
-                        No purchases yet
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-              <div className="mt-4 text-right text-sm text-gray-600">
-                Remaining Space: {remainingSpace}%
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <GameLayout
+      segments={segments}
+      onSpinEnd={handleSpinEnd}
+      showSaleForm={showSaleForm}
+      setShowSaleForm={setShowSaleForm}
+      currentDiscount={currentDiscount}
+      onSpacePurchased={handleSpacePurchased}
+      remainingSpace={remainingSpace}
+      gameInProgress={gameInProgress}
+      purchases={purchases}
+    />
   );
 };
 
