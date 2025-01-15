@@ -13,37 +13,35 @@ interface PurchasesTableProps {
 
 export const PurchasesTable = ({ purchases, remainingSpace }: PurchasesTableProps) => {
   return (
-    <div className="w-full max-w-4xl mt-8">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-semibold mb-4">Current Game Purchases</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Wallet</TableHead>
-              <TableHead>Space Percentage</TableHead>
-              <TableHead>Amount (SOL)</TableHead>
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-900">Current Game Purchases</h2>
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-50">
+            <TableHead className="font-semibold">Wallet</TableHead>
+            <TableHead className="font-semibold">Space Percentage</TableHead>
+            <TableHead className="font-semibold">Amount (SOL)</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {purchases.map((purchase, index) => (
+            <TableRow key={index} className="hover:bg-gray-50 transition-colors">
+              <TableCell className="font-mono text-purple-600">{purchase.wallet}</TableCell>
+              <TableCell>{purchase.percentage}%</TableCell>
+              <TableCell>{purchase.amount} SOL</TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {purchases.map((purchase, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-mono">{purchase.wallet}</TableCell>
-                <TableCell>{purchase.percentage}%</TableCell>
-                <TableCell>{purchase.amount} SOL</TableCell>
-              </TableRow>
-            ))}
-            {purchases.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={3} className="text-center text-gray-500">
-                  No purchases yet
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <div className="mt-4 text-right text-sm text-gray-600">
-          Remaining Space: {remainingSpace}%
-        </div>
+          ))}
+          {purchases.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={3} className="text-center text-gray-500 py-8">
+                No purchases yet
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <div className="mt-4 text-right text-sm font-medium text-gray-600">
+        Remaining Space: <span className="text-purple-600">{remainingSpace}%</span>
       </div>
     </div>
   );
